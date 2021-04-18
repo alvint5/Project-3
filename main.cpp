@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <unordered_map>
 #include "readdata.h"
 using namespace std;
 
@@ -79,6 +80,7 @@ void getCVSData(string filePath, vector<readdata>& gameVector) {
 		cout << "file not opened." << endl;
 	}
 }
+
 
 
 int main()
