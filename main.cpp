@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_map>
 #include <queue>
+#include <chrono>
 #include "Game.h"
 using namespace std;
 
@@ -79,7 +80,7 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 			peak = stoi(temp);
 			getline(stream, avgpeak, ',');
 
-			Game gameProperties(title.substr(1, title.size() - 2), year, month, avg, gain, peak, avgpeak);
+			Game gameProperties(title.substr(1, title.size() - 2), year, month, avg, gain, peak, avgpeak.substr(1, avgpeak.size() - 2));
 			gameVector.push_back(gameProperties);
 			gameMap.emplace(title.substr(1, title.size() - 2), gameProperties);
 		}
@@ -297,16 +298,100 @@ vector<Game> top10GamesFib(unordered_multimap<string, Game>& myMap, int _month, 
 
 int main()
 {
+	cout << std::fixed << setprecision(5);
+	cout << "Welcome User! One second while we retrieve our data." << endl;
+
 	/*======= Load data from file(s) =======*/
 	vector<Game> gameVector;
 	unordered_multimap<string, Game> gameMap;
 	getCVSData("data/steamcharts.csv", gameVector, gameMap);
 
+	int choice = 1;
+	while (choice != 7) {
+		cout << "1. Game Information\n";
+		cout << "2. Highest Average Playerbase\n";
+		cout << "3. Monthly Gain in Playerbase\n";
+		cout << "4. Highest Monthly Peak in Playerbase\n";
+		cout << "5. Highest Average Peak Percentage in Playerbase\n";
+		cout << "6. All-time Records\n";
+		cout << "7. End Program\n\n";
+		cin >> choice;
+		cin.get(); //clears newline character.
+
+		if (choice == 1) {
+			string temp;
+			cout << "Insert game title: " << endl;
+			getline(cin, temp);
+			cout << "Insert year: " << endl;
+			int temp2;
+			cin >> temp2;
+			cout << "Insert month: " << endl;
+			int temp3;
+			cin >> temp3;
+			auto start = chrono::steady_clock::now();
+			Game temp4 = jumpSearch(gameMap, temp, temp3, temp2);
+			auto end = chrono::steady_clock::now();
+			chrono::duration<double> jump_time = end - start;
+			
+			start = chrono::steady_clock::now();
+			Game temp5 = FibonacciSearch(gameMap, temp, temp3, temp2);
+			end = chrono::steady_clock::now();
+			chrono::duration<double> fib_time = end - start;
+			if (temp4.getYear() == -1) {
+				cout << "Game not found in data." << endl;
+			}
+			else {
+				cout << temp4.getTitle() << endl;
+				cout << "Average Player Count: " << temp4.getAvg() << endl;
+				cout << "Peak Player Count: " << temp4.getPeak() << endl;
+				cout << "Change from Previous Month: " << temp4.getGain() << endl;
+				cout << "Average/Peak Percentage: " << temp4.getAvgPeak() << endl;
+				cout << "Jump Search Algorithm Time: " << jump_time.count() << " s" << endl;
+				cout << "Fibonacci Search Algorithm Time: " << fib_time.count() << " s\n" << endl;
+			}
+		}
+		else if (choice == 2) {
+			int temp;
+			int temp2;
+			cout << "Insert year: " << endl;
+			cin >> temp;
+			cout << "Insert month: " << endl;
+			cin >> temp2;
+			auto start = chrono::steady_clock::now();
+			vector<Game> test = top10GamesFib(gameMap, temp2, temp);
+			auto end = chrono::steady_clock::now();
+			chrono::duration<double> jump_time = end - start;
+			start = chrono::steady_clock::now();
+			test = top10GamesFib(gameMap, temp2, temp);
+			end = chrono::steady_clock::now();
+			for (int i = 0; i < test.size(); i++) {
+				cout << i + 1 << ": " << test[i].getTitle() << " - " << test[i].getAvg() << endl;
+			}
+			chrono::duration<double> fib_time = end - start;
+			cout << "\nJump Search Algorithm Time: " << jump_time.count() << " s" << endl;
+			cout << "Fibonacci Search Algorithm Time: " << fib_time.count() << " s\n" << endl;
+		}
+		else if (choice == 3) {
+			cout << "Insert year: " << endl;
+			int temp;
+			cin >> temp;
+
+		}
+		else if (choice == 7) {
+			cout << "Thanks for your time!" << endl;
+		}
+		else {
+			cout << "invalid input" << endl;
+		}
+	}
+	
+	
+
 	/*======= Print out how many sets were loaded =======*/
 	int count = gameVector.size();
 	cout << "Total number of sets: " << count << endl;
 
-	/*======= Based on the choice, execute the appropriate task and show the results =======*/
+	/*======= Based on the choice, execute the appropriate task and show the results =======
 	if (count != 0) {
 
 		cout << "Game Title: " << gameVector.at(0).getTitle() << endl;
@@ -327,16 +412,28 @@ int main()
 	Game searchResult = FibonacciSearch(gameMap, "Counter-Strike: Global Offensive", 3, 2022);
 	cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
 
+	auto start = chrono::steady_clock::now();
 	test = top10GamesJump(gameMap, 9, 2012);
+	auto end = chrono::steady_clock::now();
 	for (int i = 0; i < test.size(); i++) {
 		cout << i + 1 << ": " << test[i].getTitle() << " " << test[i].getAvg() << endl;
 	}
+	chrono::duration<double> jump_time = end - start;
+	cout << "Time elapsed: " << jump_time.count() << " s" << endl;
 
+
+	start = chrono::steady_clock::now();
 	test = top10GamesFib(gameMap, 9, 2012);
+	end = chrono::steady_clock::now();
 	for (int i = 0; i < test.size(); i++) {
 		cout << i + 1 << ": " << test[i].getTitle() << " " << test[i].getAvg() << endl;
 	}
+	chrono::duration<double> fib_time = end - start;
+	cout << "Time elapsed: " << fib_time.count() << " s" << endl;
 
+	*/
+
+	
 	
 	//tiffany: matplotlib work.
 	//plotting a game's change in popularity by comparing:
