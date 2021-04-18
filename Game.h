@@ -6,7 +6,7 @@
 #include <string>
 using namespace std;
 
-class readdata
+class Game
 {
     string title;
     string year;
@@ -17,7 +17,7 @@ class readdata
     string avgpeak; //this is in percentages.
 
 public:
-    readdata(string title, string year, int month, double avg, int gain, int peak, string avgpeak);
+    Game(string title, string year, int month, double avg, int gain, int peak, string avgpeak);
     string getTitle();
     string getYear();
     int getMonth();

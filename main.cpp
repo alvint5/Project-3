@@ -6,10 +6,10 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include "readdata.h"
+#include "Game.h"
 using namespace std;
 
-void getCVSData(string filePath, vector<readdata>& gameVector) {
+void getCVSData(string filePath, vector<Game>& gameVector) {
 	ifstream inFile(filePath);
 
 	if (inFile.is_open()) {
@@ -72,7 +72,7 @@ void getCVSData(string filePath, vector<readdata>& gameVector) {
 			peak = stoi(temp);
 			getline(stream, avgpeak, ',');
 
-			readdata gameProperties(title, year, month, avg, gain, peak, avgpeak);
+			Game gameProperties(title, year, month, avg, gain, peak, avgpeak);
 			gameVector.push_back(gameProperties);
 		}
 	}
@@ -83,10 +83,16 @@ void getCVSData(string filePath, vector<readdata>& gameVector) {
 
 
 
+//Game jumpSearch(unordered_map<string, Game>& myMap, string _name, int _month, int _year) {
+
+	
+//}
+
+
 int main()
 {
 	/*======= Load data from file(s) =======*/
-	vector<readdata> gameVector;
+	vector<Game> gameVector;
 	getCVSData("data/steamcharts.csv", gameVector);
 
 	/*======= Print out how many sets were loaded =======*/
@@ -104,9 +110,6 @@ int main()
 		cout << "Monthly Peak: " << gameVector.at(0).getPeak() << endl;
 		cout << "Average Peak Percentage: " << gameVector.at(0).getAvgPeak() << endl;
 	}
-
-
-	cout << "hey what's going on?" << endl;
 	
 	return 0;
 }

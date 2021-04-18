@@ -1,4 +1,4 @@
-#include "readdata.h"
+#include "Game.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -7,7 +7,7 @@
 using namespace std;
 
 
-readdata::readdata(string title, string year, int month, double avg, int gain, int peak, string avgpeak)
+Game::Game(string title, string year, int month, double avg, int gain, int peak, string avgpeak)
 {
     this->title = title;
     this->year = year;
@@ -19,30 +19,30 @@ readdata::readdata(string title, string year, int month, double avg, int gain, i
 }
 
 
-string readdata::getTitle() {
+string Game::getTitle() {
     return this->title;
 }
 
-string readdata::getYear() {
+string Game::getYear() {
     return this->year;
 }
 
-int readdata::getMonth() {
+int Game::getMonth() {
     return this->month;
 }
 
-double readdata::getAvg() {
+double Game::getAvg() {
     return this->avg;
 }
 
-double readdata::getGain() {
+double Game::getGain() {
     return this->gain;
 }
 
-int readdata::getPeak() {
+int Game::getPeak() {
     return this->peak;
 }
 
-string readdata::getAvgPeak() {
+string Game::getAvgPeak() {
     return this->avgpeak;
 }
