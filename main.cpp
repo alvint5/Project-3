@@ -9,7 +9,12 @@
 #include "Game.h"
 using namespace std;
 
-void getCVSData(string filePath, vector<Game>& gameVector, unordered_map<string, Game>& gameMap) {
+//#include "matplotlibcpp.h"
+//namespace plt = matplotlibcpp;
+//tiffany: setting up matplot, need to download + place into source folder.
+
+
+void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<string, Game>& gameMap) {
 	ifstream inFile(filePath);
 
 	if (inFile.is_open()) {
@@ -72,9 +77,9 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_map<string,
 			peak = stoi(temp);
 			getline(stream, avgpeak, ',');
 
-			Game gameProperties(title, year, month, avg, gain, peak, avgpeak);
+			Game gameProperties(title.substr(1, title.size() - 2), year.substr(1, year.size() - 2), month, avg, gain, peak, avgpeak);
 			gameVector.push_back(gameProperties);
-			gameMap[title] = gameProperties;
+			gameMap.emplace(title, gameProperties);
 		}
 	}
 	else {
@@ -86,8 +91,9 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_map<string,
 
 //}
 
-vector<Game>& getBucketData(unordered_map<string, Game>& myMap, string& _name) {
+vector<Game> getBucketData(unordered_multimap<string, Game>& myMap, string _name) {
 	int i = myMap.bucket(_name);
+	cout << i << endl;
 	vector<Game> temp;
 	for (auto iter = myMap.begin(i); iter != myMap.end(i); ++iter) {
 		temp.push_back(iter->second);
@@ -107,7 +113,7 @@ int main()
 {
 	/*======= Load data from file(s) =======*/
 	vector<Game> gameVector;
-	unordered_map<string, Game> gameMap;
+	unordered_multimap<string, Game> gameMap;
 	getCVSData("data/steamcharts.csv", gameVector, gameMap);
 
 	/*======= Print out how many sets were loaded =======*/
@@ -125,6 +131,41 @@ int main()
 		cout << "Monthly Peak: " << gameVector.at(0).getPeak() << endl;
 		cout << "Average Peak Percentage: " << gameVector.at(0).getAvgPeak() << endl;
 	}
+
+	vector<Game> test = getBucketData(gameMap, "\"Counter-Strike: Global Offensive\"");
+	cout << "Bucket Size: " << test.size() << endl;
+	for (int i = 0; i < test.size(); i++) {
+		cout << test[i].getTitle() << " " << test[i].getMonth() << "/" << test[i].getYear() << endl;
+	}
+
 	
+	//tiffany: matplotlib work.
+	//plotting a game's change in popularity by comparing:
+	//average player count per month.
+	//player gain per month (acceleration in change).
+	//player peak per month (highest number of players on at the same time).
+
+	/*
+	plt::figure_size(1200, 780); //default 1200, 780 per pixel.
+	//have to define x and y.
+	//x will be month&year, y will be player count/stats.
+	plt::plot(x,y);
+	
+	plt::xlim(0, 1000*1000);	//player count goes from 0 to 1 mil. should be scaled down for less popular games.
+								//highest player count is csgo with 700k.
+
+	std::stringstream titlecreate;
+	//x axis: months of year, y axis: playercount.
+	titlecreate << "Average Player Count for Year of " << [gameyear] << " for " << [gametitle];
+	string titlecard = titlecreate.str();
+	plt::title(titlecard);
+	plt::legend();
+
+	//save image.
+	string imgname = "./" << [type of graph, ex: avg player count] & [gameyear] & [gametitle] << ".png";
+	plt::save(imgname);
+	
+	//g++ basic.cpp -I/usr/include/python2.7 -lpython2.7 makefile cmd(?)
+	*/
 	return 0;
 }
