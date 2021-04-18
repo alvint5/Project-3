@@ -88,6 +88,10 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 	}
 }
 
+//vector<Game>& sortData(vector<Game>& _games) {
+
+//}
+
 vector<Game> getBucketData(unordered_multimap<string, Game>& myMap, string _name) {
 	int i = myMap.bucket(_name);
 	vector<Game> temp;
@@ -105,21 +109,11 @@ Game jumpSearch(unordered_multimap<string, Game>& myMap, string _name, int _mont
 		if (games[i].getYear() <= _year) {
 			if (games[i].getMonth() < _month) {
 				i -= m;
-				if (i < 0) {
-					i = 0;
-				}
 				while (i < i + m) {
-					if (i < games.size()) {
-						if (games[i].getYear() == _year && games[i].getMonth() == _month) {
-							return games[i];
-						}
-						i++;
+					if (games[i].getYear() == _year && games[i].getMonth() == _month) {
+						return games[i];
 					}
-					else {
-						cout << "not in bucket" << endl;
-						Game temp(2012);
-						return temp;
-					}
+					i++;
 				}
 				cout << "not in bucket" << endl;
 			}
@@ -133,19 +127,108 @@ Game jumpSearch(unordered_multimap<string, Game>& myMap, string _name, int _mont
 					}
 					else {
 						cout << "not in bucket" << endl;
-						Game temp(2012);
-						return temp;
+						return games[0];
 					}
 				}
 				cout << "not in bucket" << endl;
 			}
 		}
 	}
-	cout << "no data available" << endl;
-	Game temp(2012);
-	return temp;
+	return games[0];
 }
 
+Game FibonacciSearch(unordered_multimap<string, Game>& myMap, string _name, int _month, int _year)
+{
+	vector<Game> games = getBucketData(myMap, _name);
+	int n = games.size();
+	int fibOne = 0;						// (n - 2)'th Fibonacci Number
+	int fibTwo = 1;						// (n - 1)'th Fibonacci Number
+	int fibN = fibOne + fibTwo;			// n'th Fibonacci Number
+
+
+	while (fibN < n)
+	{
+		fibTwo = fibOne;
+		fibOne = fibN;
+		fibN = fibOne + fibTwo;
+	}
+
+	int offset = -1;
+
+
+	while (fibN > 1)
+	{
+		int i = min(offset + fibTwo, n - 1);			// Finds the minimum between two index values
+
+		// Edge case check for if the Fibonacci search reaches the front of the vector
+		if (i == 0)
+		{
+			// Checks for whether the month/year provided by the user is "too recent" (no data for the input given)
+			if (games[i].getYear() == _year)
+			{
+				if (games[i].getMonth() < _month)
+				{
+					return Game();
+				}
+			}
+			else
+			{
+				return Game();
+			}
+		}
+
+
+		if (games[i].getYear() > _year)
+		{
+			fibN = fibOne;
+			fibOne = fibTwo;
+			fibTwo = fibN - fibOne;
+			offset = i;
+		}
+
+		else if (games[i].getYear() < _year)
+		{
+			fibN = fibTwo;
+			fibOne = fibOne - fibTwo;
+			fibTwo = fibN - fibOne;
+		}
+
+		else if (games[i].getYear() == _year)
+		{
+			if (games[i].getMonth() > _month)
+			{
+				fibN = fibOne;
+				fibOne = fibTwo;
+				fibTwo = fibN - fibOne;
+				offset = i;
+			}
+
+			else if (games[i].getMonth() < _month)
+			{
+				fibN = fibTwo;
+				fibOne = fibOne - fibTwo;
+				fibTwo = fibN - fibOne;
+			}
+			else
+			{
+				return games[i];
+			}
+		}
+
+		else
+		{
+			return games[i];
+		}
+	}
+
+	// Checks the last entry in the vector
+	if (fibOne && games[offset - 1].getYear() == _year && games[offset - 1].getMonth() == _month)
+	{
+		return games[offset - 1];
+	}
+
+	return Game();
+}
 
 int main()
 {
@@ -176,10 +259,8 @@ int main()
 		cout << test[i].getTitle() << " " << test[i].getMonth() << "/" << test[i].getYear() << endl;
 	}
 
-	Game searchResult = jumpSearch(gameMap, "Secrets of Grindea", 3, 2021);
-	if (searchResult.getYear() != -1) {
-		cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
-	}
+	Game searchResult = FibonacciSearch(gameMap, "Counter-Strike: Global Offensive", 3, 2022);
+	cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
 
 	
 	//tiffany: matplotlib work.
