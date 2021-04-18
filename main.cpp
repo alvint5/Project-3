@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <queue>
 #include "Game.h"
 using namespace std;
 
@@ -146,6 +147,34 @@ Game jumpSearch(unordered_multimap<string, Game>& myMap, string _name, int _mont
 	return temp;
 }
 
+class Comparator {
+public:
+	int operator() (Game& _game1, Game& _game2) {
+		return _game1.getAvg() < _game2.getAvg();
+	}
+};
+
+vector<Game> top10PopularJump(unordered_multimap<string, Game>& myMap, int _month, int _year) {
+	vector<Game> popular;
+	priority_queue<Game, vector<Game>, Comparator> maxHeap;
+	for (int i = 0; i < myMap.bucket_count(); ++i) {
+		auto iter = myMap.begin(i);
+		if (iter != myMap.end(i)); {
+			Game temp = jumpSearch(myMap, iter->first, _month, _year);
+			if (temp.getYear() != -1) {
+				maxHeap.push(temp);
+			}
+		}
+	}
+
+	int temp = 0;
+	while (temp < 10) {
+		popular.push_back(maxHeap.top());
+		maxHeap.pop();
+	}
+	return popular;
+}
+
 
 int main()
 {
@@ -179,6 +208,11 @@ int main()
 	Game searchResult = jumpSearch(gameMap, "Secrets of Grindea", 3, 2021);
 	if (searchResult.getYear() != -1) {
 		cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
+	}
+
+	test = top10PopularJump(gameMap, 2, 2021);
+	for (int i = 0; i < test.size(); i++) {
+		cout << i << ": " << test[i].getTitle() << " " << test[i].getAvg() << endl;
 	}
 
 	
