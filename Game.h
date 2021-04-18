@@ -10,7 +10,7 @@ class Game //change readdata to Game
 {
     string title;
     string year;
-    int month; //convert month into integer representation with if-statements?
+    int month;
     double avg;
     double gain;
     int peak;

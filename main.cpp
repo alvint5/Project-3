@@ -9,6 +9,11 @@
 #include "Game.h"
 using namespace std;
 
+//#include "matplotlibcpp.h"
+//namespace plt = matplotlibcpp;
+//tiffany: setting up matplot, need to download + place into source folder.
+
+
 void getCVSData(string filePath, vector<Game>& gameVector) {
 	ifstream inFile(filePath);
 
@@ -111,5 +116,33 @@ int main()
 		cout << "Average Peak Percentage: " << gameVector.at(0).getAvgPeak() << endl;
 	}
 	
+	//tiffany: matplotlib work.
+	//plotting a game's change in popularity by comparing:
+	//average player count per month.
+	//player gain per month (acceleration in change).
+	//player peak per month (highest number of players on at the same time).
+
+	/*
+	plt::figure_size(1200, 780); //default 1200, 780 per pixel.
+	//have to define x and y.
+	//x will be month&year, y will be player count/stats.
+	plt::plot(x,y);
+	
+	plt::xlim(0, 1000*1000);	//player count goes from 0 to 1 mil. should be scaled down for less popular games.
+								//highest player count is csgo with 700k.
+
+	std::stringstream titlecreate;
+	//x axis: months of year, y axis: playercount.
+	titlecreate << "Average Player Count for Year of " << [gameyear] << " for " << [gametitle];
+	string titlecard = titlecreate.str();
+	plt::title(titlecard);
+	plt::legend();
+
+	//save image.
+	string imgname = "./" << [type of graph, ex: avg player count] & [gameyear] & [gametitle] << ".png";
+	plt::save(imgname);
+	
+	//g++ basic.cpp -I/usr/include/python2.7 -lpython2.7 makefile cmd(?)
+	*/
 	return 0;
 }
