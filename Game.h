@@ -19,6 +19,7 @@ class Game //change readdata to Game
 public:
     Game();
     Game(string title, int year, int month, double avg, int gain, int peak, string avgpeak);
+    Game(int year);
     string getTitle();
     int getYear();
     int getMonth();

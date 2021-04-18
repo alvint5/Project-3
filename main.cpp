@@ -127,14 +127,17 @@ Game jumpSearch(unordered_multimap<string, Game>& myMap, string _name, int _mont
 					}
 					else {
 						cout << "not in bucket" << endl;
-						return games[0];
+						Game temp(2012);
+						return temp;
 					}
 				}
 				cout << "not in bucket" << endl;
 			}
 		}
 	}
-	return games[0];
+	cout << "no data available" << endl;
+	Game temp(2012);
+	return temp;
 }
 
 
@@ -167,8 +170,10 @@ int main()
 		cout << test[i].getTitle() << " " << test[i].getMonth() << "/" << test[i].getYear() << endl;
 	}
 
-	Game searchResult = jumpSearch(gameMap, "Counter-Strike: Global Offensive", 12, 2012);
-	cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
+	Game searchResult = jumpSearch(gameMap, "Secrets of Grindea", 12, 2012);
+	if (searchResult.getYear() != -1) {
+		cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
+	}
 
 	
 	//tiffany: matplotlib work.

@@ -21,6 +21,10 @@ Game::Game(string title, int year, int month, double avg, int gain, int peak, st
     this->avgpeak = avgpeak;
 }
 
+Game::Game(int year) {
+    this->year = -1;
+}
+
 
 string Game::getTitle() {
     return this->title;
