@@ -8,6 +8,7 @@ using namespace std;
 
 Game::Game() {
     this->title = "";
+    this->year = -1;
 }
 
 Game::Game(string title, int year, int month, double avg, int gain, int peak, string avgpeak) //change readdata to Game

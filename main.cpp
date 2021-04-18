@@ -89,6 +89,7 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 	}
 }
 
+
 vector<Game> getBucketData(unordered_multimap<string, Game>& myMap, string _name) {
 	int i = myMap.bucket(_name);
 	vector<Game> temp;
@@ -106,23 +107,13 @@ Game jumpSearch(unordered_multimap<string, Game>& myMap, string _name, int _mont
 		if (games[i].getYear() <= _year) {
 			if (games[i].getMonth() < _month) {
 				i -= m;
-				if (i < 0) {
-					i = 0;
-				}
 				while (i < i + m) {
-					if (i < games.size()) {
-						if (games[i].getYear() == _year && games[i].getMonth() == _month) {
-							return games[i];
-						}
-						i++;
+					if (games[i].getYear() == _year && games[i].getMonth() == _month) {
+						return games[i];
 					}
-					else {
-						cout << "not in bucket" << endl;
-						Game temp(2012);
-						return temp;
-					}
+					i++;
 				}
-				cout << "not in bucket" << endl;
+				//cout << "not in bucket" << endl;
 			}
 			else {
 				while (i < i + 12) {
@@ -133,33 +124,130 @@ Game jumpSearch(unordered_multimap<string, Game>& myMap, string _name, int _mont
 						i++;
 					}
 					else {
-						cout << "not in bucket" << endl;
+						//cout << "not in bucket" << endl;
 						Game temp(2012);
 						return temp;
 					}
 				}
-				cout << "not in bucket" << endl;
+				//cout << "not in bucket" << endl;
 			}
 		}
 	}
-	cout << "no data available" << endl;
 	Game temp(2012);
 	return temp;
 }
 
-class Comparator {
-public:
+Game FibonacciSearch(unordered_multimap<string, Game>& myMap, string _name, int _month, int _year)
+{
+	vector<Game> games = getBucketData(myMap, _name);
+	int n = games.size();
+	int fibOne = 0;						// (n - 2)'th Fibonacci Number
+	int fibTwo = 1;						// (n - 1)'th Fibonacci Number
+	int fibN = fibOne + fibTwo;			// n'th Fibonacci Number
+
+
+	while (fibN < n)
+	{
+		fibTwo = fibOne;
+		fibOne = fibN;
+		fibN = fibOne + fibTwo;
+	}
+
+	int offset = -1;
+
+
+	while (fibN > 1)
+	{
+		int i = min(offset + fibTwo, n - 1);			// Finds the minimum between two index values
+
+		// Edge case check for if the Fibonacci search reaches the front of the vector
+		if (i == 0)
+		{
+			// Checks for whether the month/year provided by the user is "too recent" (no data for the input given)
+			if (games[i].getYear() == _year)
+			{
+				if (games[i].getMonth() < _month)
+				{
+					Game temp(12);
+					return temp;
+				}
+			}
+			else
+			{
+				Game temp(12);
+				return temp;
+			}
+		}
+
+
+		if (games[i].getYear() > _year)
+		{
+			fibN = fibOne;
+			fibOne = fibTwo;
+			fibTwo = fibN - fibOne;
+			offset = i;
+		}
+
+		else if (games[i].getYear() < _year)
+		{
+			fibN = fibTwo;
+			fibOne = fibOne - fibTwo;
+			fibTwo = fibN - fibOne;
+		}
+
+		else if (games[i].getYear() == _year)
+		{
+			if (games[i].getMonth() > _month)
+			{
+				fibN = fibOne;
+				fibOne = fibTwo;
+				fibTwo = fibN - fibOne;
+				offset = i;
+			}
+
+			else if (games[i].getMonth() < _month)
+			{
+				fibN = fibTwo;
+				fibOne = fibOne - fibTwo;
+				fibTwo = fibN - fibOne;
+			}
+			else
+			{
+				return games[i];
+			}
+		}
+
+		else
+		{
+			return games[i];
+		}
+	}
+
+	// Checks the last entry in the vector
+	if (fibOne && games[offset - 1].getYear() == _year && games[offset - 1].getMonth() == _month)
+	{
+		return games[offset - 1];
+	}
+
+	Game temp(12);
+	return temp;
+}
+
+
+struct myComparator {
 	int operator() (Game& _game1, Game& _game2) {
 		return _game1.getAvg() < _game2.getAvg();
 	}
 };
 
-vector<Game> top10PopularJump(unordered_multimap<string, Game>& myMap, int _month, int _year) {
-	vector<Game> popular;
-	priority_queue<Game, vector<Game>, Comparator> maxHeap;
+	
+vector<Game> top10GamesJump(unordered_multimap<string, Game>& myMap, int _month, int _year) {
+	priority_queue<Game, vector<Game>, myComparator> maxHeap;
+	vector<Game> games;
+
 	for (int i = 0; i < myMap.bucket_count(); ++i) {
 		auto iter = myMap.begin(i);
-		if (iter != myMap.end(i)); {
+		if (iter != myMap.end(i)) {
 			Game temp = jumpSearch(myMap, iter->first, _month, _year);
 			if (temp.getYear() != -1) {
 				maxHeap.push(temp);
@@ -167,13 +255,44 @@ vector<Game> top10PopularJump(unordered_multimap<string, Game>& myMap, int _mont
 		}
 	}
 
-	int temp = 0;
-	while (temp < 10) {
-		popular.push_back(maxHeap.top());
+	int temp = 10;
+
+	while (temp > 0) {
+		Game temp2 = maxHeap.top();
+		games.push_back(temp2);
 		maxHeap.pop();
+		temp--;
 	}
-	return popular;
+
+	return games;
 }
+
+vector<Game> top10GamesFib(unordered_multimap<string, Game>& myMap, int _month, int _year) {
+	priority_queue<Game, vector<Game>, myComparator> maxHeap;
+	vector<Game> games;
+
+	for (int i = 0; i < myMap.bucket_count(); ++i) {
+		auto iter = myMap.begin(i);
+		if (iter != myMap.end(i)) {
+			Game temp = FibonacciSearch(myMap, iter->first, _month, _year);
+			if (temp.getYear() != -1) {
+				maxHeap.push(temp);
+			}
+		}
+	}
+
+	int temp = 10;
+
+	while (temp > 0) {
+		Game temp2 = maxHeap.top();
+		games.push_back(temp2);
+		maxHeap.pop();
+		temp--;
+	}
+
+	return games;
+}
+
 
 
 int main()
@@ -205,14 +324,17 @@ int main()
 		cout << test[i].getTitle() << " " << test[i].getMonth() << "/" << test[i].getYear() << endl;
 	}
 
-	Game searchResult = jumpSearch(gameMap, "Secrets of Grindea", 3, 2021);
-	if (searchResult.getYear() != -1) {
-		cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
+	Game searchResult = FibonacciSearch(gameMap, "Counter-Strike: Global Offensive", 3, 2022);
+	cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
+
+	test = top10GamesJump(gameMap, 9, 2012);
+	for (int i = 0; i < test.size(); i++) {
+		cout << i + 1 << ": " << test[i].getTitle() << " " << test[i].getAvg() << endl;
 	}
 
-	test = top10PopularJump(gameMap, 2, 2021);
+	test = top10GamesFib(gameMap, 9, 2012);
 	for (int i = 0; i < test.size(); i++) {
-		cout << i << ": " << test[i].getTitle() << " " << test[i].getAvg() << endl;
+		cout << i + 1 << ": " << test[i].getTitle() << " " << test[i].getAvg() << endl;
 	}
 
 	
