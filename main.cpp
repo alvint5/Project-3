@@ -88,10 +88,6 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 	}
 }
 
-//vector<Game>& sortData(vector<Game>& _games) {
-
-//}
-
 vector<Game> getBucketData(unordered_multimap<string, Game>& myMap, string _name) {
 	int i = myMap.bucket(_name);
 	vector<Game> temp;
@@ -109,11 +105,21 @@ Game jumpSearch(unordered_multimap<string, Game>& myMap, string _name, int _mont
 		if (games[i].getYear() <= _year) {
 			if (games[i].getMonth() < _month) {
 				i -= m;
+				if (i < 0) {
+					i = 0;
+				}
 				while (i < i + m) {
-					if (games[i].getYear() == _year && games[i].getMonth() == _month) {
-						return games[i];
+					if (i < games.size()) {
+						if (games[i].getYear() == _year && games[i].getMonth() == _month) {
+							return games[i];
+						}
+						i++;
 					}
-					i++;
+					else {
+						cout << "not in bucket" << endl;
+						Game temp(2012);
+						return temp;
+					}
 				}
 				cout << "not in bucket" << endl;
 			}
@@ -170,7 +176,7 @@ int main()
 		cout << test[i].getTitle() << " " << test[i].getMonth() << "/" << test[i].getYear() << endl;
 	}
 
-	Game searchResult = jumpSearch(gameMap, "Secrets of Grindea", 12, 2012);
+	Game searchResult = jumpSearch(gameMap, "Secrets of Grindea", 3, 2021);
 	if (searchResult.getYear() != -1) {
 		cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
 	}
