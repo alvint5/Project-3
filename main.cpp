@@ -104,6 +104,9 @@ int main()
 		cout << "Monthly Peak: " << gameVector.at(0).getPeak() << endl;
 		cout << "Average Peak Percentage: " << gameVector.at(0).getAvgPeak() << endl;
 	}
+
+
+	cout << "hey what's going on?" << endl;
 	
 	return 0;
 }
