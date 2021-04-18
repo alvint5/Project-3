@@ -6,6 +6,10 @@
 #include <string>
 using namespace std;
 
+Game::Game() {
+    this->title = "";
+    this->year = "";
+}
 
 Game::Game(string title, string year, int month, double avg, int gain, int peak, string avgpeak) //change readdata to Game
 {

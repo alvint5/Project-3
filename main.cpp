@@ -9,7 +9,7 @@
 #include "Game.h"
 using namespace std;
 
-void getCVSData(string filePath, vector<Game>& gameVector) {
+void getCVSData(string filePath, vector<Game>& gameVector, unordered_map<string, Game>& gameMap) {
 	ifstream inFile(filePath);
 
 	if (inFile.is_open()) {
@@ -74,6 +74,7 @@ void getCVSData(string filePath, vector<Game>& gameVector) {
 
 			Game gameProperties(title, year, month, avg, gain, peak, avgpeak);
 			gameVector.push_back(gameProperties);
+			gameMap[title] = gameProperties;
 		}
 	}
 	else {
@@ -81,9 +82,22 @@ void getCVSData(string filePath, vector<Game>& gameVector) {
 	}
 }
 
+//vector<Game>& sortData(vector<Game>& _games) {
 
+//}
 
-//Game jumpSearch(unordered_map<string, Game>& myMap, string _name, int _month, int _year) {
+vector<Game>& getBucketData(unordered_map<string, Game>& myMap, string& _name) {
+	int i = myMap.bucket(_name);
+	vector<Game> temp;
+	for (auto iter = myMap.begin(i); iter != myMap.end(i); ++iter) {
+		temp.push_back(iter->second);
+	}
+	//temp = sortData(temp);
+	return temp;
+}
+
+//Game jumpSearch(unordered_map<string, Game>& myMap, string& _name, int& _month, int& _year) {
+	//vector<Game> games = getBucketData(myMap, _name);
 
 	
 //}
@@ -93,7 +107,8 @@ int main()
 {
 	/*======= Load data from file(s) =======*/
 	vector<Game> gameVector;
-	getCVSData("data/steamcharts.csv", gameVector);
+	unordered_map<string, Game> gameMap;
+	getCVSData("data/steamcharts.csv", gameVector, gameMap);
 
 	/*======= Print out how many sets were loaded =======*/
 	int count = gameVector.size();
