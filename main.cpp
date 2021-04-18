@@ -79,7 +79,7 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 
 			Game gameProperties(title.substr(1, title.size() - 2), year.substr(1, year.size() - 2), month, avg, gain, peak, avgpeak);
 			gameVector.push_back(gameProperties);
-			gameMap.emplace(title, gameProperties);
+			gameMap.emplace(title.substr(1, title.size() - 2), gameProperties);
 		}
 	}
 	else {
@@ -132,7 +132,7 @@ int main()
 		cout << "Average Peak Percentage: " << gameVector.at(0).getAvgPeak() << endl;
 	}
 
-	vector<Game> test = getBucketData(gameMap, "\"Counter-Strike: Global Offensive\"");
+	vector<Game> test = getBucketData(gameMap, "Counter-Strike: Global Offensive");
 	cout << "Bucket Size: " << test.size() << endl;
 	for (int i = 0; i < test.size(); i++) {
 		cout << test[i].getTitle() << " " << test[i].getMonth() << "/" << test[i].getYear() << endl;
