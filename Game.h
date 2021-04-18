@@ -6,7 +6,7 @@
 #include <string>
 using namespace std;
 
-class Game
+class Game //change readdata to Game
 {
     string title;
     string year;
