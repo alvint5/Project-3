@@ -23,8 +23,9 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 
 		while (getline(inFile, line)) {
 			string temp;
+			string temp2;
 			string title;
-			string year;
+			int year;
 			int month; //convert month into integer representation with if-statements?
 			double avg;
 			double gain;
@@ -34,8 +35,8 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 			istringstream stream(line);
 
 			getline(stream, title, ',');
-			getline(stream, year, ',');
-			//year = stoi(temp);
+			getline(stream, temp2, ',');
+			year = stoi(temp2.substr(1, temp2.size() - 2));
 			getline(stream, temp, ',');
 			if (temp == "\"January\"")
 				month = 1;
@@ -77,7 +78,7 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 			peak = stoi(temp);
 			getline(stream, avgpeak, ',');
 
-			Game gameProperties(title.substr(1, title.size() - 2), year.substr(1, year.size() - 2), month, avg, gain, peak, avgpeak);
+			Game gameProperties(title.substr(1, title.size() - 2), year, month, avg, gain, peak, avgpeak);
 			gameVector.push_back(gameProperties);
 			gameMap.emplace(title.substr(1, title.size() - 2), gameProperties);
 		}
@@ -98,15 +99,22 @@ vector<Game> getBucketData(unordered_multimap<string, Game>& myMap, string _name
 	for (auto iter = myMap.begin(i); iter != myMap.end(i); ++iter) {
 		temp.push_back(iter->second);
 	}
-	//temp = sortData(temp);
 	return temp;
 }
 
-//Game jumpSearch(unordered_map<string, Game>& myMap, string& _name, int& _month, int& _year) {
-	//vector<Game> games = getBucketData(myMap, _name);
+Game jumpSearch(unordered_multimap<string, Game>& myMap, string& _name, int& _month, int& _year) {
+	vector<Game> games = getBucketData(myMap, _name);
+	int m = sqrt(games.size());
 
-	
-//}
+	for (int i = 0; i < games.size(); i += m) {
+		if (games[i].getYear() < _year) {
+			if (games[i].getMonth() < _month) {
+
+			}
+		}
+	}
+	return games[0];
+}
 
 
 int main()

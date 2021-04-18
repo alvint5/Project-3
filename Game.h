@@ -9,7 +9,7 @@ using namespace std;
 class Game //change readdata to Game
 {
     string title;
-    string year;
+    int year;
     int month;
     double avg;
     double gain;
@@ -18,9 +18,9 @@ class Game //change readdata to Game
 
 public:
     Game();
-    Game(string title, string year, int month, double avg, int gain, int peak, string avgpeak);
+    Game(string title, int year, int month, double avg, int gain, int peak, string avgpeak);
     string getTitle();
-    string getYear();
+    int getYear();
     int getMonth();
     double getAvg();
     double getGain();

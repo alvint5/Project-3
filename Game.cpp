@@ -8,10 +8,9 @@ using namespace std;
 
 Game::Game() {
     this->title = "";
-    this->year = "";
 }
 
-Game::Game(string title, string year, int month, double avg, int gain, int peak, string avgpeak) //change readdata to Game
+Game::Game(string title, int year, int month, double avg, int gain, int peak, string avgpeak) //change readdata to Game
 {
     this->title = title;
     this->year = year;
@@ -27,7 +26,7 @@ string Game::getTitle() {
     return this->title;
 }
 
-string Game::getYear() {
+int Game::getYear() {
     return this->year;
 }
 
