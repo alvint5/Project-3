@@ -79,7 +79,6 @@ void getCVSData(string filePath, vector<Game>& gameVector) {
 	else {
 		cout << "file not opened." << endl;
 	}
-	//alvin's dumb
 }
 
 
