@@ -94,7 +94,6 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 
 vector<Game> getBucketData(unordered_multimap<string, Game>& myMap, string _name) {
 	int i = myMap.bucket(_name);
-	cout << i << endl;
 	vector<Game> temp;
 	for (auto iter = myMap.begin(i); iter != myMap.end(i); ++iter) {
 		temp.push_back(iter->second);
@@ -102,14 +101,36 @@ vector<Game> getBucketData(unordered_multimap<string, Game>& myMap, string _name
 	return temp;
 }
 
-Game jumpSearch(unordered_multimap<string, Game>& myMap, string& _name, int& _month, int& _year) {
+Game jumpSearch(unordered_multimap<string, Game>& myMap, string _name, int _month, int _year) {
 	vector<Game> games = getBucketData(myMap, _name);
 	int m = sqrt(games.size());
 
 	for (int i = 0; i < games.size(); i += m) {
-		if (games[i].getYear() < _year) {
+		if (games[i].getYear() <= _year) {
 			if (games[i].getMonth() < _month) {
-
+				i -= m;
+				while (i < i + m) {
+					if (games[i].getYear() == _year && games[i].getMonth() == _month) {
+						return games[i];
+					}
+					i++;
+				}
+				cout << "not in bucket" << endl;
+			}
+			else {
+				while (i < i + 12) {
+					if (i < games.size()) {
+						if (games[i].getYear() == _year && games[i].getMonth() == _month) {
+							return games[i];
+						}
+						i++;
+					}
+					else {
+						cout << "not in bucket" << endl;
+						return games[0];
+					}
+				}
+				cout << "not in bucket" << endl;
 			}
 		}
 	}
@@ -145,6 +166,9 @@ int main()
 	for (int i = 0; i < test.size(); i++) {
 		cout << test[i].getTitle() << " " << test[i].getMonth() << "/" << test[i].getYear() << endl;
 	}
+
+	Game searchResult = jumpSearch(gameMap, "Counter-Strike: Global Offensive", 12, 2012);
+	cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
 
 	
 	//tiffany: matplotlib work.
