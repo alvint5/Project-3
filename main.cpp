@@ -294,6 +294,28 @@ vector<Game> top10GamesFib(unordered_multimap<string, Game>& myMap, int _month, 
 	return games;
 }
 
+vector<Game> top10AllTime(unordered_multimap<string, Game>& myMap) {
+	priority_queue<Game, vector<Game>, myComparator> maxHeap;
+	vector<Game> games;
+
+	for (auto iter = myMap.begin(); iter != myMap.end(); ++iter) {
+		if (iter->second.getYear() != -1) {
+			maxHeap.push(iter->second);
+		}
+	}
+
+	int temp = 10;
+
+	while (temp > 0) {
+		Game temp2 = maxHeap.top();
+		games.push_back(temp2);
+		maxHeap.pop();
+		temp--;
+	}
+
+	return games;
+}
+
 
 
 int main()
@@ -311,8 +333,8 @@ int main()
 		cout << "1. Game Information\n";
 		cout << "2. Highest Average Playerbase\n";
 		cout << "3. Monthly Gain in Playerbase\n";
-		cout << "4. Highest Monthly Peak in Playerbase\n";
-		cout << "5. Highest Average Peak Percentage in Playerbase\n";
+		cout << "4. Monthly Peak in Playerbase\n";
+		cout << "5. Average Peak Percentage in Playerbase\n";
 		cout << "6. All-time Records\n";
 		cout << "7. End Program\n\n";
 		cin >> choice;
@@ -344,7 +366,7 @@ int main()
 				cout << temp4.getTitle() << endl;
 				cout << "Average Player Count: " << temp4.getAvg() << endl;
 				cout << "Peak Player Count: " << temp4.getPeak() << endl;
-				cout << "Change from Previous Month: " << temp4.getGain() << endl;
+				cout << "Gain from Previous Month: " << temp4.getGain() << endl;
 				cout << "Average/Peak Percentage: " << temp4.getAvgPeak() << endl;
 				cout << "Jump Search Algorithm Time: " << jump_time.count() << " s" << endl;
 				cout << "Fibonacci Search Algorithm Time: " << fib_time.count() << " s\n" << endl;
@@ -372,10 +394,115 @@ int main()
 			cout << "Fibonacci Search Algorithm Time: " << fib_time.count() << " s\n" << endl;
 		}
 		else if (choice == 3) {
+			cout << "Insert game title:" << endl;
+			string temp3;
+			getline(cin, temp3);
 			cout << "Insert year: " << endl;
 			int temp;
 			cin >> temp;
+			auto start = chrono::steady_clock::now();
+			for (int i = 1; i < 13; i++) {
+				Game temp2 = jumpSearch(gameMap, temp3, i, temp);
+				if (temp2.getYear() == -1) {
+					cout << i << ": No Info For This Month" << endl;
+				}
+				else {
+					cout << i << ": " << temp2.getGain() << endl;
+				}
+			}
+			auto end = chrono::steady_clock::now();
+			chrono::duration<double> jump_time = end - start;
 
+			start = chrono::steady_clock::now();
+			for (int i = 1; i < 13; i++) {
+				Game temp2 = FibonacciSearch(gameMap, temp3, i, temp);
+				if (temp2.getYear() == -1) {
+					cout << "";
+				}
+				else {
+					cout << "";
+				}
+			}
+			end = chrono::steady_clock::now();
+			chrono::duration<double> fib_time = end - start;
+			
+			cout << "\nJump Search Algorithm Time: " << jump_time.count() << " s" << endl;
+			cout << "Fibonacci Search Algorithm Time: " << fib_time.count() << " s\n" << endl;
+		}
+		else if (choice == 4) {
+			cout << "Insert game title:" << endl;
+			string temp3;
+			getline(cin, temp3);
+			cout << "Insert year: " << endl;
+			int temp;
+			cin >> temp;
+			auto start = chrono::steady_clock::now();
+			for (int i = 1; i < 13; i++) {
+				Game temp2 = jumpSearch(gameMap, temp3, i, temp);
+				if (temp2.getYear() == -1) {
+					cout << i << ": No Info For This Month" << endl;
+				}
+				else {
+					cout << i << ": " << temp2.getPeak() << endl;
+				}
+			}
+			auto end = chrono::steady_clock::now();
+			chrono::duration<double> jump_time = end - start;
+
+			start = chrono::steady_clock::now();
+			for (int i = 1; i < 13; i++) {
+				Game temp2 = FibonacciSearch(gameMap, temp3, i, temp);
+				if (temp2.getYear() == -1) {
+					cout << "";
+				}
+				else {
+					cout << "";
+				}
+			}
+			end = chrono::steady_clock::now();
+			chrono::duration<double> fib_time = end - start;
+
+			cout << "\nJump Search Algorithm Time: " << jump_time.count() << " s" << endl;
+			cout << "Fibonacci Search Algorithm Time: " << fib_time.count() << " s\n" << endl;
+		}
+		else if (choice == 5) {
+			cout << "Insert game title:" << endl;
+			string temp3;
+			getline(cin, temp3);
+			cout << "Insert year: " << endl;
+			int temp;
+			cin >> temp;
+			auto start = chrono::steady_clock::now();
+			for (int i = 1; i < 13; i++) {
+				Game temp2 = jumpSearch(gameMap, temp3, i, temp);
+				if (temp2.getYear() == -1) {
+					cout << i << ": No Info For This Month" << endl;
+				}
+				else {
+					cout << i << ": " << temp2.getAvgPeak() << endl;
+				}
+			}
+			auto end = chrono::steady_clock::now();
+			chrono::duration<double> jump_time = end - start;
+
+			start = chrono::steady_clock::now();
+			for (int i = 1; i < 13; i++) {
+				Game temp2 = FibonacciSearch(gameMap, temp3, i, temp);
+				if (temp2.getYear() == -1) {
+					cout << "";
+				}
+				else {
+					cout << "";
+				}
+			}
+			end = chrono::steady_clock::now();
+			chrono::duration<double> fib_time = end - start;
+
+			cout << "\nJump Search Algorithm Time: " << jump_time.count() << " s" << endl;
+			cout << "Fibonacci Search Algorithm Time: " << fib_time.count() << " s\n" << endl;
+		}
+		else if (choice == 6) {
+			
 		}
 		else if (choice == 7) {
 			cout << "Thanks for your time!" << endl;
