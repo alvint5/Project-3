@@ -138,6 +138,9 @@ Game jumpSearch(unordered_multimap<string, Game>& myMap, string _name, int _mont
 	return temp;
 }
 
+
+/*======= Perform Fibonacci Search algorithm; derived from https://www.geeksforgeeks.org/fibonacci-search/ =======*/
+/*======= Modified to support edge cases and a reverse sorted vector =======*/
 Game FibonacciSearch(unordered_multimap<string, Game>& myMap, string _name, int _month, int _year)
 {
 	vector<Game> games = getBucketData(myMap, _name);
