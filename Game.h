@@ -6,7 +6,7 @@
 #include <string>
 using namespace std;
 
-class Game //change readdata to Game
+class Game //change readdata to Game.
 {
     string title;
     int year;
@@ -20,6 +20,7 @@ public:
     Game();
     Game(string title, int year, int month, double avg, int gain, int peak, string avgpeak);
     Game(int year);
+    //accessor functions.
     string getTitle();
     int getYear();
     int getMonth();

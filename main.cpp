@@ -12,11 +12,8 @@
 #include "Game.h"
 using namespace std;
 
-//#include "matplotlibcpp.h"
-//namespace plt = matplotlibcpp;
-//tiffany: setting up matplot, need to download + place into source folder.
-
-
+//function to retrieve data from CVS files, designed for Steam games.
+//implemented personal code from previous lab assignments.
 void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<string, Game>& gameMap, unordered_set<string>& gameNames) {
 	ifstream inFile(filePath);
 
@@ -29,7 +26,7 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 			string temp2;
 			string title;
 			int year;
-			int month; //convert month into integer representation with if-statements?
+			int month;
 			double avg;
 			double gain;
 			int peak;
@@ -81,6 +78,7 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 			peak = stoi(temp);
 			getline(stream, avgpeak, ',');
 
+			//push onto data structures.
 			Game gameProperties(title.substr(1, title.size() - 2), year, month, avg, gain, peak, avgpeak.substr(1, avgpeak.size() - 2));
 			gameVector.push_back(gameProperties);
 			gameMap.emplace(title.substr(1, title.size() - 2), gameProperties);
@@ -88,7 +86,7 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 		}
 	}
 	else {
-		cout << "file not opened." << endl;
+		cout << "file not opened." << endl;	//error.
 	}
 }
 
@@ -635,83 +633,5 @@ int main()
 		}
 	}
 	
-	
-
-	/*======= Print out how many sets were loaded =======*/
-	int count = gameVector.size();
-	cout << "Total number of sets: " << count << endl;
-
-	/*======= Based on the choice, execute the appropriate task and show the results =======
-	if (count != 0) {
-
-		cout << "Game Title: " << gameVector.at(0).getTitle() << endl;
-		cout << "Year: " << gameVector.at(0).getYear() << endl;
-		cout << "Month: " << gameVector.at(0).getMonth() << endl;
-		cout << "Average: " << gameVector.at(0).getAvg() << endl;
-		cout << "Monthly Gain: " << gameVector.at(0).getGain() << endl;
-		cout << "Monthly Peak: " << gameVector.at(0).getPeak() << endl;
-		cout << "Average Peak Percentage: " << gameVector.at(0).getAvgPeak() << endl;
-	}
-
-	vector<Game> test = getBucketData(gameMap, "Counter-Strike: Global Offensive");
-	cout << "Bucket Size: " << test.size() << endl;
-	for (int i = 0; i < test.size(); i++) {
-		cout << test[i].getTitle() << " " << test[i].getMonth() << "/" << test[i].getYear() << endl;
-	}
-
-	Game searchResult = FibonacciSearch(gameMap, "Counter-Strike: Global Offensive", 3, 2022);
-	cout << searchResult.getMonth() << "/" << searchResult.getYear() << endl;
-
-	auto start = chrono::steady_clock::now();
-	test = top10GamesJump(gameMap, 9, 2012);
-	auto end = chrono::steady_clock::now();
-	for (int i = 0; i < test.size(); i++) {
-		cout << i + 1 << ": " << test[i].getTitle() << " " << test[i].getAvg() << endl;
-	}
-	chrono::duration<double> jump_time = end - start;
-	cout << "Time elapsed: " << jump_time.count() << " s" << endl;
-
-
-	start = chrono::steady_clock::now();
-	test = top10GamesFib(gameMap, 9, 2012);
-	end = chrono::steady_clock::now();
-	for (int i = 0; i < test.size(); i++) {
-		cout << i + 1 << ": " << test[i].getTitle() << " " << test[i].getAvg() << endl;
-	}
-	chrono::duration<double> fib_time = end - start;
-	cout << "Time elapsed: " << fib_time.count() << " s" << endl;
-
-	*/
-
-	
-	
-	//tiffany: matplotlib work.
-	//plotting a game's change in popularity by comparing:
-	//average player count per month.
-	//player gain per month (acceleration in change).
-	//player peak per month (highest number of players on at the same time).
-
-	/*
-	plt::figure_size(1200, 780); //default 1200, 780 per pixel.
-	//have to define x and y.
-	//x will be month&year, y will be player count/stats.
-	plt::plot(x,y);
-	
-	plt::xlim(0, 1000*1000);	//player count goes from 0 to 1 mil. should be scaled down for less popular games.
-								//highest player count is csgo with 700k.
-
-	std::stringstream titlecreate;
-	//x axis: months of year, y axis: playercount.
-	titlecreate << "Average Player Count for Year of " << [gameyear] << " for " << [gametitle];
-	string titlecard = titlecreate.str();
-	plt::title(titlecard);
-	plt::legend();
-
-	//save image.
-	string imgname = "./" << [type of graph, ex: avg player count] & [gameyear] & [gametitle] << ".png";
-	plt::save(imgname);
-	
-	//g++ basic.cpp -I/usr/include/python2.7 -lpython2.7 makefile cmd(?)
-	*/
 	return 0;
 }

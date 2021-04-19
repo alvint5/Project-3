@@ -26,7 +26,7 @@ Game::Game(int year) {
     this->year = -1;
 }
 
-
+//accessor functions.
 string Game::getTitle() {
     return this->title;
 }
