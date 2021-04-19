@@ -14,7 +14,7 @@ using namespace std;
 
 //function to retrieve data from CVS files, designed for Steam games.
 //implemented personal code from previous lab assignments.
-void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<string, Game>& gameMap, unordered_set<string>& gameNames) {
+void getCVSData(string filePath, unordered_multimap<string, Game>& gameMap, unordered_set<string>& gameNames) {
 	ifstream inFile(filePath);
 
 	if (inFile.is_open()) {
@@ -80,7 +80,6 @@ void getCVSData(string filePath, vector<Game>& gameVector, unordered_multimap<st
 
 			//push onto data structures.
 			Game gameProperties(title.substr(1, title.size() - 2), year, month, avg, gain, peak, avgpeak.substr(1, avgpeak.size() - 2));
-			gameVector.push_back(gameProperties);
 			gameMap.emplace(title.substr(1, title.size() - 2), gameProperties);
 			gameNames.insert(title.substr(1, title.size() - 2));
 		}
@@ -102,7 +101,7 @@ vector<Game> getBucketData(unordered_multimap<string, Game>& myMap, string _name
 
 Game jumpSearch(unordered_multimap<string, Game>& myMap, string _name, int _month, int _year) {
 	vector<Game> games = getBucketData(myMap, _name);
-	int m = sqrt(games.size());
+	int m = sqrt(games.size()); //optimal value obtained from geeks for geeks explanation of jump search
 
 	for (int i = 0; i < games.size(); i += m) {
 		if (games[i].getYear() <= _year) {
@@ -410,10 +409,9 @@ int main()
 	cout << "Welcome User! One second while we retrieve our data.\n" << endl;
 
 	/*======= Load data from file(s) =======*/
-	vector<Game> gameVector;
 	unordered_multimap<string, Game> gameMap;
 	unordered_set<string> names;
-	getCVSData("data/steamcharts.csv", gameVector, gameMap, names);
+	getCVSData("data/steamcharts.csv", gameMap, names);
 
 	int choice = 1;
 	while (choice != 7) {
@@ -449,7 +447,7 @@ int main()
 					end = chrono::steady_clock::now();
 					chrono::duration<double> fib_time = end - start;
 					if (temp4.getYear() == -1) {
-						cout << "Game not found in data." << endl;
+						cout << "Game data not found for this date." << endl;
 					}
 					else {
 						cout << temp4.getTitle() << endl;
@@ -495,6 +493,7 @@ int main()
 				cout << "Insert year: " << endl;
 				int temp;
 				cin >> temp;
+				cout << endl;
 				if (validYearInput(temp) == true) {
 					auto start = chrono::steady_clock::now();
 					for (int i = 1; i < 13; i++) {
@@ -535,6 +534,7 @@ int main()
 				cout << "Insert year: " << endl;
 				int temp;
 				cin >> temp;
+				cout << endl;
 				if (validYearInput(temp) == true) {
 					auto start = chrono::steady_clock::now();
 					for (int i = 1; i < 13; i++) {
@@ -575,6 +575,7 @@ int main()
 				cout << "Insert year: " << endl;
 				int temp;
 				cin >> temp;
+				cout << endl;
 				if (validYearInput(temp) == true) {
 					auto start = chrono::steady_clock::now();
 					for (int i = 1; i < 13; i++) {
@@ -615,6 +616,7 @@ int main()
 				cout << "Invalid input!" << endl;
 			}
 			else if (temp == "Y") {
+				cout << endl;
 				vector<Game> test = top10AllTime(gameMap);
 				for (int i = 0; i < test.size(); i++) {
 					cout << i + 1 << ": " << test[i].getTitle() << " - " << test[i].getAvg() << " - " << test[i].getMonth() << "/" << test[i].getYear() << endl;
@@ -622,6 +624,7 @@ int main()
 				cout << endl;
 			}
 			else {
+				cout << endl;
 				vector<Game> test = top10AllTimeNoDupes(gameMap);
 				for (int i = 0; i < test.size(); i++) {
 					cout << i + 1 << ": " << test[i].getTitle() << " - " << test[i].getAvg() << " - " << test[i].getMonth() << "/" << test[i].getYear() << endl;
@@ -630,7 +633,7 @@ int main()
 			}
 		}
 		else if (choice == 7) {
-			cout << "Thanks for your time!" << endl;
+			cout << "\nThanks for your time!" << endl;
 		}
 		else {
 			cout << "Not a valid choice input!" << endl;
