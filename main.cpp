@@ -183,7 +183,7 @@ Game FibonacciSearch(unordered_multimap<string, Game>& myMap, string _name, int 
 			}
 		}
 
-
+		// Fibonacci method of stepping through the vector
 		if (games[i].getYear() > _year)
 		{
 			fibN = fibOne;
@@ -199,6 +199,7 @@ Game FibonacciSearch(unordered_multimap<string, Game>& myMap, string _name, int 
 			fibTwo = fibN - fibOne;
 		}
 
+		// Ensures both month and year match
 		else if (games[i].getYear() == _year)
 		{
 			if (games[i].getMonth() > _month)
